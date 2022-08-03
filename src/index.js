@@ -21,8 +21,7 @@ function onInput(e) {
       // Error handling
       console.log(error);
       Notify.failure('Oops, there is no country with that name');
-      refs.ulEl.innerHTML = '';
-      refs.divEl.innerHTML = '';
+      resetElement();
     });
 }
 
@@ -32,14 +31,12 @@ const checkLengthInData = data => {
     return;
   } else if (data.length >= 2 && data.length <= 10) {
     insertContentInUl(data);
-  } else if (data.length === 1) {
-    insertContentInDiv(...data);
   } else {
-    refs.ulEl.innerHTML = '';
-    refs.divEl.innerHTML = '';
+    insertContentInDiv(...data);
   }
 };
 
+/////
 //ul
 
 const createListItem = item =>
@@ -49,11 +46,11 @@ const generateListContent = array =>
   array ? array.reduce((acc, item) => acc + createListItem(item), '') : '';
 
 const insertContentInUl = array => {
-  refs.divEl.innerHTML = '';
+  resetElement();
   refs.ulEl.insertAdjacentHTML('beforeend', generateListContent(array));
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////
 //div
 
 const createDivContent = ({ name, capital, population, languages, flags }) => {
@@ -62,8 +59,13 @@ const createDivContent = ({ name, capital, population, languages, flags }) => {
 };
 
 const insertContentInDiv = item => {
-  refs.ulEl.innerHTML = '';
+  resetElement();
   refs.divEl.insertAdjacentHTML('beforeend', createDivContent(item));
+};
+
+const resetElement = () => {
+  refs.ulEl.innerHTML = '';
+  refs.divEl.innerHTML = '';
 };
 
 refs.inputel.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
