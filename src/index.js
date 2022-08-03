@@ -13,18 +13,13 @@ const refs = {
 function onInput(e) {
   e.preventDefault();
   fetchCountries(e.target.value.trim())
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(response.status);
-      }
-      return response.json();
-    })
     .then(data => {
       // Data handling
       checkLengthInData(data);
     })
     .catch(error => {
       // Error handling
+      console.log(error);
       Notify.failure('Oops, there is no country with that name');
       refs.ulEl.innerHTML = '';
       refs.divEl.innerHTML = '';
