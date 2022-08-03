@@ -26,13 +26,12 @@ function onInput(e) {
 }
 
 const checkLengthInData = data => {
-  if (data.length > 10) {
-    Notify.info('Too many matches found. Please enter a more specific name.');
-    return;
+  if (data.length === 1) {
+    insertContentInDiv(...data);
   } else if (data.length >= 2 && data.length <= 10) {
     insertContentInUl(data);
   } else {
-    insertContentInDiv(...data);
+    Notify.info('Too many matches found. Please enter a more specific name.');
   }
 };
 
