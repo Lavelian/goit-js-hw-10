@@ -13,9 +13,21 @@ const refs = {
 function onInput(e) {
   e.preventDefault();
   fetchCountries(e.target.value.trim())
-    .then(r => r.json())
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(response.status);
+      }
+      return response.json();
+    })
     .then(data => {
+      // Data handling
       checkLengthInData(data);
+    })
+    .catch(error => {
+      // Error handling
+      Notify.failure('Oops, there is no country with that name');
+      refs.ulEl.innerHTML = '';
+      refs.divEl.innerHTML = '';
     });
 }
 
@@ -26,9 +38,8 @@ const checkLengthInData = data => {
   } else if (data.length >= 2 && data.length <= 10) {
     insertContentInUl(data);
   } else if (data.length === 1) {
-    insertContentInDiv(...data )
+    insertContentInDiv(...data);
   } else {
-    Notify.failure('Oops, there is no country with that name');
     refs.ulEl.innerHTML = '';
     refs.divEl.innerHTML = '';
   }
@@ -43,21 +54,21 @@ const generateListContent = array =>
   array ? array.reduce((acc, item) => acc + createListItem(item), '') : '';
 
 const insertContentInUl = array => {
+  refs.divEl.innerHTML = '';
   refs.ulEl.insertAdjacentHTML('beforeend', generateListContent(array));
 };
-
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //div
 
 const createDivContent = ({ name, capital, population, languages, flags }) => {
-  const currentLanguages = languages.map(( item) =>  item.name ).join(",")
- return `<span><img src=${flags.svg} width="20" height="20"> </span><p>${name}</p><p>Capital: ${capital}</p><p> Population: ${population}</p><p>Languages: ${currentLanguages}</p>`
+  const currentLanguages = languages.map(item => item.name).join(',');
+  return `<span><img src=${flags.svg} width="20" height="20"> </span><p>${name}</p><p>Capital: ${capital}</p><p> Population: ${population}</p><p>Languages: ${currentLanguages}</p>`;
 };
 
 const insertContentInDiv = item => {
-  console.log(item);
-    refs.divEl.insertAdjacentHTML('beforeend', createDivContent( item));
-}
-  
+  refs.ulEl.innerHTML = '';
+  refs.divEl.insertAdjacentHTML('beforeend', createDivContent(item));
+};
+
 refs.inputel.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
