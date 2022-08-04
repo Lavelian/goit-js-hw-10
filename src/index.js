@@ -11,15 +11,14 @@ const refs = {
 };
 
 function onInput(e) {
-  e.preventDefault();
+  if (!e.target.value) {
+    return;
+  }
   fetchCountries(e.target.value.trim())
     .then(data => {
-      // Data handling
       checkLengthInData(data);
     })
-    .catch(error => {
-      // Error handling
-      console.log(error);
+    .catch(() => {
       Notify.failure('Oops, there is no country with that name');
       resetElement();
     });
@@ -30,7 +29,7 @@ const checkLengthInData = data => {
     insertContentInDiv(...data);
   } else if (data.length >= 2 && data.length <= 10) {
     insertContentInUl(data);
-  } else {
+  } else  {
     Notify.info('Too many matches found. Please enter a more specific name.');
   }
 };
